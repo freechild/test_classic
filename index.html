@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>test</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.js"></script>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: gray;
+            z-index: 4;
+            padding-bottom: 15px;
+        }
+
+        header>div {
+            margin-top: 10px;
+        }
+
+        article {
+            position: relative;
+            margin-top: 81px;
+            width: 100%;
+        }
+
+        article ol {
+            list-style-type: none;
+        }
+
+        article>content ol>li {
+            border: solid 2px;
+            padding-left: 1%;
+        }
+
+        article>content ol>li>div {
+            float: left;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+
+        article>content ol>li>button {
+            position: relative;
+            top: -5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <button v-on:click="_toggle_layer('insert_layer')">추가</button>
+            <br>
+            <div v-if="insert_layer">
+                title :
+                <input type="text" v-model="inputValue">
+                <button v-on:click="_insert_item">추가</button>
+            </div>
+            <div v-if="modify_layer">
+                title :
+                <input type="text" v-model="modifyValue">
+                <button v-on:click="_modify_item">수정</button>
+            </div>
+        </header>
+        <article>
+            <content>
+                <ol>
+                    <li v-for="todo in todos" :key="todo.id">
+                        <div>title : {{todo.title}} ++ {{todo.userId}} ++ {{todo.id}}</div>
+                        <img src="http://via.placeholder.com/40x20?text=sample">
+                        <br>
+                        <button v-on:click="_delete_item(todo.id)">삭제</button>
+                        <button v-on:click="_toggle_layer('modify_layer',todo.id,todo.title)">수정</button>
+                    </li>
+                </ol>
+            </content>
+        </article>
+    </div>
+
+    <script>
+        var api = "https://jsonplaceholder.typicode.com/albums"
+        new Vue({
+            el: '#app',
+            data: {
+                insert_layer: false,
+                modify_layer: false,
+                todos: [],
+                inputValue: '',
+                modifyValue: '',
+                modifyTargetNumber: 0,
+            },
+            created: function () {
+                var self = this;
+                axios.get(api)
+                    .then(function (response) {
+                        self.todos = response.data
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            methods: {
+                _toggle_layer: function (_target, _targetNumber, title) {
+                    const flag = (this[_target] === true) ? false : true;
+                    this[_target] = flag;
+                    if (_target == 'modify_layer') {
+                        this.modifyTargetNumber = _targetNumber;
+                        this.modifyValue = title;
+                    }
+                },
+                _delete_item: function (_target) {
+                    var temp_target = _target - 1;
+                    var count = this.todos.length - 1;
+                    var tempArr = this.todos;
+
+                    for (var i = (temp_target); i <= count; ++i) {
+                        if (i === count) {
+                            tempArr.pop();
+                        } else {
+                            tempArr[i].title = tempArr[i + 1].title;
+                        }
+
+                    }
+
+                },
+                _modify_item: function () {
+                    this.todos[this.modifyTargetNumber - 1].title = this.modifyValue;
+                    this.modifyValue = "";
+                    this.modifyTargetNumber = 0;
+                    this.modify_layer = false;
+                },
+                _insert_item: function () {
+                    var tempSize = this.todos.length
+                    var tempObj = {}
+                    if (this.inputValue != "") {
+                        tempObj.userId = Math.ceil((tempSize + 1) / 10);
+                        tempObj.id = tempSize + 1;
+                        tempObj.title = this.inputValue;
+                        this.todos.push(tempObj)
+                        this.inputValue = "";
+                        this.insert_layer = false;
+                    } else {
+                        alert("null")
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

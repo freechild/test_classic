@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>test</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.js"></script>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: gray;
+            z-index: 4;
+            padding-bottom: 15px;
+        }
+
+        header>div {
+            margin-top: 10px;
+        }
+
+        article {
+            position: relative;
+            margin-top: 81px;
+            width: 100%;
+        }
+
+        article ol {
+            list-style-type: none;
+        }
+
+        article>content ol>li {
+            border: solid 2px;
+            padding-left: 1%;
+            padding-bottom: 2%;
+        }
+
+        article>content ol>li>div {
+            float: left;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+
+        article>content ol>li>button {
+            position: relative;
+            top: -5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <button v-on:click="_toggle_layer('insert_layer')">추가</button>
+            <br>
+            <div v-if="insert_layer">
+                이름 :
+                <input type="text" v-model="inputValue_name">
+                <input type="date" v-model="inputValue_birth">
+                <input type="date" v-model="inputValue_obit">
+                <input type="text" v-model="inputValue_genrn">
+                <input type="text" v-model="inputValue_nation">
+                <button v-on:click="_insert_item">추가</button>
+            </div>
+        </header>
+        <article>
+            <content>
+                <ol>
+                    <li v-for="(todo,i) in todos" :key="todo.id">
+                        <div>name :
+                            <input type="text" v-bind:value="todo.name" id="name" v-on:change="_input_change(todo._id,i,$event)">
+                        </div>
+                        <div>birth :
+                            <input type="date" v-bind:value="todo.birth" id="birth" v-on:change="_input_change(todo._id,i,$event)">
+                        </div>
+                        <div>obit :
+                            <input type="date" v-bind:value="todo.obit" id="obit" v-on:change="_input_change(todo._id,i,$event)">
+                        </div>
+                        <div>genre :
+                            <input type="text" v-bind:value="todo.genre" id="genre" v-on:change="_input_change(todo._id,i,$event)">
+                        </div>
+                        <div>nation :
+                            <input type="text" v-bind:value="todo.nation" id="nation" v-on:change="_input_change(todo._id,i,$event)">
+                        </div>
+                        <!-- <input type="hidden" value={{todo.id}}> -->
+                        <br>
+                        <button v-on:click="_delete_item(todo._id,i)">삭제</button>
+
+                    </li>
+                </ol>
+            </content>
+        </article>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                insert_layer: false,
+                todos: [],
+                inputValue_name: '',
+                inputValue_birth: '',
+                inputValue_obit: '',
+                inputValue_genrn: '',
+                inputValue_nation: '',
+            },
+            watch: {
+
+            },
+            created: function () {
+                var self = this;
+                var api = "http://localhost:3000/front"
+                axios.get(api)
+                    .then(function (response) {
+                        self.todos = response.data
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            methods: {
+                _toggle_layer: function (_target, _targetNumber, title) {
+                    const flag = (this[_target] === true) ? false : true;
+                    this[_target] = flag;
+                },
+                _input_change: function (_target_id, _target_number, event) {
+                    var _target_field = event.target.id
+                    var _target_value = event.target.value
+                    var self = this;
+                    var addValue = "?id=" + _target_id + "&field==" + _target_field + '&fieldValue=' +
+                        _target_value
+                    var url = "http://localhost:3000/front/input" + addValue;
+                    axios.post(url).then(function () {
+                        console.log('succ')
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                },
+                _delete_item: function (_target, i) {
+                    var self = this;
+                    var addValue = "?id=" + _target;
+                    var url = "http://localhost:3000/front/delete" + addValue;
+                    axios.post(url).then(function (result) {
+                        if (result.data === true) {
+                            self.todos.splice(i, 1)
+                        }
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+
+                },
+                _insert_item: function () {
+                    var self = this;
+                    var addValue = "?name=" + this.inputValue_name + "&birth=" + this.inputValue_birth +
+                        "&obit=" + this.inputValue_obit + "&genre=" + this.inputValue_genrn + "&nation=" +
+                        this.inputValue_nation;
+                    var url = "http://localhost:3000/front/add" + addValue;
+
+                    axios.post(url).then(function (result) {
+                        console.log(result.data)
+                        self.todos.push(result.data)
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
