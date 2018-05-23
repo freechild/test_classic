@@ -23,13 +23,10 @@ const db = new DB();
 
 
 export let index = (req: Request, res: Response) => {
-
+    res.send('hello world');
 };
 
 export let modify_data = (req: Request, res: Response) => {
-
-    console.log(req.query.id)
-    console.log(req.query.fieldValue)
     connection.then(() => {
         return db.modify(req.query.id, req.query.field, req.query.fieldValue)
     }).then((result) => {
@@ -40,6 +37,7 @@ export let modify_data = (req: Request, res: Response) => {
 }
 
 export let add_data = (req: Request, res: Response) => {
+    console.log('add');
 
     connection.then(() => {
         let artistValue = <Info_Artist>{ name: req.query.name, birth: req.query.birth, obit: req.query.obit, genre: req.query.genre, nation: req.query.nation }

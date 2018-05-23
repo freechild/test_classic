@@ -49,7 +49,7 @@ app.use(express_1.default.static(path_1.default.join(__dirname, "public"), { max
  */
 app.get("/", homeController.index);
 app.get("/front", homeController.findAll);
-app.post("/front/input", homeController.modify_data);
+app.post("/front/modify", homeController.modify_data);
 app.post("/front/add", homeController.add_data);
 app.post("/front/delete", homeController.delete_data);
 /**

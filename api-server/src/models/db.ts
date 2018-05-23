@@ -30,19 +30,12 @@ export class DB {
     }
     size(): any {
         return ArtistModel.count({});
-        // ArtistModel.count({}, (err, count) => {
-        //     return count
-        // }).then((result) => {
-        //     console.log('2 = ' + result)
-        //     return result;
-        // })
     }
     findAll(): any {
         return ArtistModel.find({});
     }
 
-    modify(id: any, target: string, value: any): any {
-        console.log(value)
+    modify(id: string, target: string, value: string): any {
         let update = {}
         update[target] = value;
         // return ArtistModel.update({ _id: id }, { $set: { name: value } });

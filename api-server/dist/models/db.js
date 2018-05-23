@@ -25,18 +25,11 @@ class DB {
     }
     size() {
         return artist_1.ArtistModel.count({});
-        // ArtistModel.count({}, (err, count) => {
-        //     return count
-        // }).then((result) => {
-        //     console.log('2 = ' + result)
-        //     return result;
-        // })
     }
     findAll() {
         return artist_1.ArtistModel.find({});
     }
     modify(id, target, value) {
-        console.log(value);
         let update = {};
         update[target] = value;
         // return ArtistModel.update({ _id: id }, { $set: { name: value } });

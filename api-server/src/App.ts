@@ -48,7 +48,7 @@ app.use(
  */
 app.get("/", homeController.index);
 app.get("/front", homeController.findAll);
-app.post("/front/input", homeController.modify_data);
+app.post("/front/modify", homeController.modify_data);
 app.post("/front/add", homeController.add_data);
 app.post("/front/delete", homeController.delete_data);
 /**

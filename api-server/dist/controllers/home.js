@@ -18,10 +18,9 @@ const db = new db_1.DB();
 //     console.log(result)
 // })
 exports.index = (req, res) => {
+    res.send('hello world');
 };
 exports.modify_data = (req, res) => {
-    console.log(req.query.id);
-    console.log(req.query.fieldValue);
     connection.then(() => {
         return db.modify(req.query.id, req.query.field, req.query.fieldValue);
     }).then((result) => {
@@ -31,6 +30,7 @@ exports.modify_data = (req, res) => {
     res.send('out');
 };
 exports.add_data = (req, res) => {
+    console.log('add');
     connection.then(() => {
         let artistValue = { name: req.query.name, birth: req.query.birth, obit: req.query.obit, genre: req.query.genre, nation: req.query.nation };
         return db.create(artistValue);
