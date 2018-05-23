@@ -11,11 +11,12 @@
   "config": {
     "nuxt": {
       "host": "0.0.0.0",
-      "port": "3333"
+      "port": "80"
     }
   },
   "scripts": {
     "dev": "nuxt",
+    "watch": "tsc -w",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"

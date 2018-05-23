@@ -2,7 +2,7 @@ import { stat } from "fs";
 
 export const state = () => ({
   todos: [],
-  api: "http://localhost:3000/front"
+  api: "http://13.124.52.217:3000/front"
 })
 
 export const mutations = {
@@ -25,7 +25,7 @@ export const mutations = {
 export const actions = {
   async nuxtServerInit({ commit }, { app }) {
     const todos = await app.$axios.$get(
-      "http://localhost:3000/front"
+      "http://13.124.52.217:3000/front"
     )
     commit("setTotods", todos)
   }
